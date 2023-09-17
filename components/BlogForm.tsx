@@ -4,7 +4,8 @@ import { FC } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import * as z from "zod";
-
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -16,7 +17,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { toast } from "@/components/ui/use-toast";
 import { Textarea } from "./ui/textarea";
 import {
   Select,
@@ -26,6 +26,7 @@ import {
   SelectValue,
 } from "./ui/select";
 import { BlogFormInputProps } from "@/types";
+import { Category } from "@prisma/client";
 
 interface BlogFormProps {
   onSubmit: SubmitHandler<BlogFormInputProps>;
@@ -51,6 +52,17 @@ const BlogForm: FC<BlogFormProps> = ({ onSubmit, isEditing }) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     // @ts-ignore
     resolver: zodResolver(FormSchema),
+  });
+
+  // Fetch categories list
+  const { data: dataCategories, isLoading: isLoadingCategories } = useQuery<
+    Category[]
+  >({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const response = await axios.get("/api/categories");
+      return response.data;
+    },
   });
 
   return (
@@ -102,18 +114,21 @@ const BlogForm: FC<BlogFormProps> = ({ onSubmit, isEditing }) => {
           render={({ field }) => (
             <FormItem className="bg-primary">
               <FormLabel>Category</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select
+                disabled={isLoadingCategories}
+                onValueChange={field.onChange}
+                defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger className="text-black">
                     <SelectValue placeholder="Select  a category" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent className="bg-primary text-white">
-                  <SelectItem value="Productivity">Productivity</SelectItem>
-                  <SelectItem value="NextJs">NextJs</SelectItem>
-                  <SelectItem value="Open Source Contribution">
-                    Open Source Contribution
-                  </SelectItem>
+                  {dataCategories?.map((item) => (
+                    <SelectItem key={item.id} value={item.name}>
+                      {item.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
               <FormDescription>

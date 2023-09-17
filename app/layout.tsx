@@ -3,6 +3,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster";
+import QueryProvider from "@/providers/QueryClientProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,9 +20,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} bg-primary text-secondary`}>
-        <Navbar />
-        <div className="">{children}</div>
-        <Toaster />
+        <QueryProvider>
+          <Navbar />
+          <div className="">{children}</div>
+          <Toaster />
+        </QueryProvider>
       </body>
     </html>
   );
