@@ -37,7 +37,7 @@ const BlogIdPage: FC<BlogIdPageProps> = async ({ params }) => {
           <h2 className="text-2xl font-bold my-4">{blog?.title}</h2>
           <Button variant={"secondary"}>{blog?.Category.name}</Button>
         </div>
-        <ActionButtons />
+        <ActionButtons id={params.id} />
       </div>
       <div className="text-muted">
         <p>{blog?.body}</p>

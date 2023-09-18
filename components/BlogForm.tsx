@@ -25,12 +25,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import { BlogFormInputProps } from "@/types";
+import { BlogFormInputProps, BlogProps } from "@/types";
 import { Category } from "@prisma/client";
 
 interface BlogFormProps {
   onSubmit: SubmitHandler<BlogFormInputProps>;
   isEditing: boolean;
+  initialValue?: BlogFormInputProps;
+  isLoading: boolean;
 }
 
 const FormSchema = z.object({
@@ -48,10 +50,16 @@ const FormSchema = z.object({
   }),
 });
 
-const BlogForm: FC<BlogFormProps> = ({ onSubmit, isEditing }) => {
+const BlogForm: FC<BlogFormProps> = ({
+  onSubmit,
+  isEditing,
+  initialValue,
+  isLoading,
+}) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     // @ts-ignore
     resolver: zodResolver(FormSchema),
+    defaultValues: initialValue,
   });
 
   // Fetch categories list
@@ -140,6 +148,7 @@ const BlogForm: FC<BlogFormProps> = ({ onSubmit, isEditing }) => {
         />
 
         <Button
+          disabled={isLoading}
           variant={"destructive"}
           size={"lg"}
           type="submit"
