@@ -2,7 +2,7 @@
 export type BlogFormInputProps = {
   title: string;
   body: string;
-  category: string;
+  categoryId: string;
 };
 
 export type BlogProps = {

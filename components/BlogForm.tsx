@@ -43,7 +43,7 @@ const FormSchema = z.object({
   body: z.string().min(2, {
     message: "body must be at least 2 characters.",
   }),
-  category: z.string({
+  categoryId: z.string({
     required_error: "Please select an category",
   }),
 });
@@ -110,7 +110,7 @@ const BlogForm: FC<BlogFormProps> = ({ onSubmit, isEditing }) => {
 
         <FormField
           control={form.control}
-          name="category"
+          name="categoryId"
           render={({ field }) => (
             <FormItem className="bg-primary">
               <FormLabel>Category</FormLabel>
@@ -125,7 +125,7 @@ const BlogForm: FC<BlogFormProps> = ({ onSubmit, isEditing }) => {
                 </FormControl>
                 <SelectContent className="bg-primary text-white">
                   {dataCategories?.map((item) => (
-                    <SelectItem key={item.id} value={item.name}>
+                    <SelectItem key={item.id} value={item.id}>
                       {item.name}
                     </SelectItem>
                   ))}
